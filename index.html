@@ -158,9 +158,45 @@
 				sub.addListener({
 					onItemUpdate: function(update) {
 						$("#"+update.getItemName()).text(update.getValue("Value"));
+						console.log(ecef2lla($('#USLAB000032').html(), $('#USLAB000033').html(), $('#USLAB000034').html()));
 					}
 				});
 			});
+
+			//http://stackoverflow.com/questions/18253546/ecef-to-lla-lat-lon-alt-in-java
+			var a = 6378137;
+			var f = 0.0034;
+			var b = 6.3568e6;
+			var e = Math.sqrt((Math.pow(a, 2) - Math.pow(b, 2)) / Math.pow(a, 2));
+			var e2 = Math.sqrt((Math.pow(a, 2) - Math.pow(b, 2)) / Math.pow(b, 2));
+
+			function ecef2lla(x, y, z) {
+			  x=x*1000;
+			  y=y*1000;
+			  z=z*1000;
+			    var lla = [];
+			    var lan, lon, height, N , theta, p;
+
+			    p = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+
+			    theta = Math.atan((z * a) / (p * b));
+
+			    lon = Math.atan(y / x);
+
+			    lat = Math.atan(((z + Math.pow(e2, 2) * b * Math.pow(Math.sin(theta), 3)) / ((p - Math.pow(e, 2) * a * Math.pow(Math.cos(theta), 3)))));
+			    N = a / (Math.sqrt(1 - (Math.pow(e, 2) * Math.pow(Math.sin(lat), 2))));
+
+			    var m = (p / Math.cos(lat));
+			    height = m - N;
+
+
+			    lon = lon * 180 / Math.PI;
+			    lat = lat * 180 / Math.PI; 
+			    lla[0] = lat;
+			    lla[1] = lon;
+			    lla[2] = height;
+			    return lla;
+			}
       	});
       });
 
