@@ -1,0 +1,6 @@
+.project
+.settings
+*.sublime*
+*.log
+.DS_Store
+/simplepg
