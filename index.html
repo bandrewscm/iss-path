@@ -70,12 +70,13 @@
     </div>
 
     <script src="cordova.js"></script>
-    <script src="js/app.min.js"></script>
+    <script src="js/jquery-2.1.3.min.js"></script>
     <script src="js/require.js"></script>
-	<script src="js/lightstreamer.js"></script>
-	<script src="js/jquery-2.1.3.min.js"></script>
-	<script type="text/javascript" src="js/three.min.js"></script>
-	<script type="text/javascript" src="js/d3.v3.min.js"></script>
+    <script src="js/lightstreamer.js"></script>
+    <script src="js/app.min.js"></script>
+
+    <script type="text/javascript" src="js/three.min.js"></script>
+	
 
     <script>
       App.controller('home', function (page) {
@@ -170,19 +171,42 @@
 
 	  App.controller('page3', function (page) {
       	$(page).on('appShow', function () {
-	      	var sampleSVG = d3.select("#d3js-container")
-		        .append("svg")
-		        .attr("width", 100)
-		        .attr("height", 100);    
+	      	require.config({paths: {d3: "js/d3.v3.min"}});
 
-		    sampleSVG.append("circle")
-		        .style("stroke", "gray")
-		        .style("fill", "white")
-		        .attr("r", 40)
-		        .attr("cx", 50)
-		        .attr("cy", 50)
-		        .on("mouseover", function(){d3.select(this).style("fill", "aliceblue");})
-		        .on("mouseout", function(){d3.select(this).style("fill", "white");});
+			require(["d3"], function(d3) {
+			  	var sampleSVG = d3.select("#d3js-container")
+			        .append("svg")
+			        .attr("width", 100)
+			        .attr("height", 100);    
+
+			    sampleSVG.append("circle")
+			        .style("stroke", "gray")
+			        .style("fill", "white")
+			        .attr("r", 40)
+			        .attr("cx", 50)
+			        .attr("cy", 50)
+			        .on("mouseover", function(){d3.select(this).style("fill", "aliceblue");})
+			        .on("mouseout", function(){d3.select(this).style("fill", "white");})
+			        .on("mousedown", animateFirstStep);
+
+				function animateFirstStep(){
+				    d3.select(this)
+				      .transition()            
+				        .delay(0)            
+				        .duration(1000)
+				        .attr("r", 10)
+				        .each("end", animateSecondStep);
+				};
+
+				function animateSecondStep(){
+				    d3.select(this)
+				      .transition()
+				        .duration(1000)
+				        .attr("r", 40);
+				};
+			});
+
+	      	
       	});
       });
 
